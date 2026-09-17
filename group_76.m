@@ -19,10 +19,10 @@ sys1 = tf(numerator, denominator);
     % 
     %  -1.586e-05+0.00016389i       -10+5i   
     %  -1.586e-05-0.00016389i       -10-5i   
-    % -0.00034619+0i                -11+0i   
-    %  -0.0016292+0.0028724i         -1+1i   
-    %  -0.0016292-0.0028724i         -1-1i   
-    %   0.0036364+0i                  0+0i   
+    %  -0.00034619+0i               -11+0i   
+    %  -0.0016292+0.0028724i        -1+1i   
+    %  -0.0016292-0.0028724i        -1-1i   
+    %   0.0036364+0i                 0+0i   
 
 % Step response in time domain (inverse laplace transform):
 
@@ -57,29 +57,21 @@ disp(table(r,p, 'VariableNames', {'Residues', 'Poles'}))
 low_step_response = 2 .* exp(-t) .* (-0.0018182*cos(t) - (0.0018182)*sin(t)) ...
     + 0.0036364;
 
-% Plot the time step response
-
-
+% Plot the step response of both systems
+% 2nd order system overlaid on 5th order system
 figure;
-subplot(3,1,1)
-step(sys1, t);
-hold on;
-plot(t, step_response, 'r--')
-hold off;
-
-subplot(3,1,2)
-step(sys2, t);
-hold on;
-plot(t, low_step_response, 'r--')
-hold off;
-
-subplot(3,1,3)
 step(sys1, t);
 hold on;
 step(sys2, t, 'r--');
-legend('Nonlinear', 'Linear with offset', 'Location', 'southeast')
+% Plot horizontal line at 0.5 * steady state to extract delay time
+yline(0.0018181)
+legend('Original Higher Order (5th) System', 'Lower Order (2nd) Approximation', 'Location', 'southeast')
 hold off;
 
+% Time domain properties - rise time, settling time, overshoot%
 
-
-
+format long
+% 5th order
+info_5th = stepinfo(sys1)
+% 2nd order
+info_2nd = stepinfo(sys2)
