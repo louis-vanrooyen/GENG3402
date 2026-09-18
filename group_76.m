@@ -11,7 +11,8 @@ sys1 = tf(numerator, denominator);
 
 [r, p, k] = residue(numerator, step_denominator); % Finding the partial fractions for inverse laplace
 
-%disp(table(r, p, 'VariableNames', {'Residues', 'Poles'}))
+disp('5th order system poles & residues')
+disp(table(r, p, 'VariableNames', {'Residues', 'Poles'}))
 
 % Output:
     %       Residues                 Poles
@@ -43,6 +44,7 @@ sys2 = tf(low_numerator, low_denominator);
 
 [r, p, k] = residue(numerator, step_low_denominator); % Finding the partial fractions for inverse laplace
 
+disp('2nd order system poles & residues')
 disp(table(r,p, 'VariableNames', {'Residues', 'Poles'}))
 
 % Output
@@ -75,3 +77,49 @@ format long
 info_5th = stepinfo(sys1)
 % 2nd order
 info_2nd = stepinfo(sys2)
+
+% Delay time derived from measuring from plot
+
+% s domain analysis
+% Pole zero maps
+pzopt = pzoptions;
+pzopt.Grid = 'on';
+pzopt.XLim = [-12 1];
+pzopt.YLim = [-5.5 5.5];
+
+figure;
+subplot(1,2,1);
+pz1 = pzplot(sys1, pzopt);
+subplot(1,2,2);
+pz2 = pzplot(sys2, pzopt);
+
+% s domain properties
+[wn1, zeta1, p1] = damp(sys1);
+[wn2, zeta2, p2] = damp(sys2);
+
+% Tabulate them:
+format short
+disp('5th Order System s-domain Properties')
+sys1_properties = table(p1, wn1, zeta1, 'VariableNames', {'Pole', 'Natural Frequency', 'Damping Ratio'});
+disp(sys1_properties);
+disp("2nd Order Approximation s-domain Properties")
+sys2_properties = table(p2, wn2, zeta2, 'VariableNames', {'Pole', 'Natural Frequency', 'Damping Ratio'});
+disp(sys2_properties);
+
+% Output
+% 5th Order System s-domain Properties
+%      Pole     Natural Frequency    Damping Ratio
+%     ______    _________________    _____________
+% 
+%      -1+1i         1.4142             0.70711   
+%      -1-1i         1.4142             0.70711   
+%     -11+0i             11                   1   
+%     -10+5i          11.18             0.89443   
+%     -10-5i          11.18             0.89443   
+% 
+% 2nd Order Approximation s-domain Properties
+%     Pole     Natural Frequency    Damping Ratio
+%     _____    _________________    _____________
+% 
+%     -1+1i         1.4142             0.70711   
+%     -1-1i         1.4142             0.70711   
